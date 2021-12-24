@@ -18,12 +18,9 @@ int main() {
         printf("File can not be found: %d\n", errno);
         fprintf(stderr, "Error opening file: %s\n", strerror(errnum));
     }else {
-        
-        
-
         // Obtain the size of the first json file
         fseek(oldJSONFile, 0, SEEK_END);
-        oldFileSize = ftell(oldFileSize);
+        oldFileSize = ftell(oldJSONFile);
         rewind(oldJSONFile);
 
         // Allocate memory
@@ -31,11 +28,18 @@ int main() {
         if (buff == NULL) {
             errnum = errno; 
             fprintf(stderr, "Memory error: %s\n", strerror(errnum));
-            };
+        };
 
-        oldJSONFileResult = size_t fread(buff, 1, oldFileSize, oldJSONFile);
+        // Read the file as binary
+        oldJSONFileResult = fread(buff, 1, oldFileSize, oldJSONFile);
+        if (oldJSONFileResult != oldFileSize) {
+            errnum = errno;
+            fprintf(stderr, "Reading file error: %s\n", strerror(errnum));
+        }
+
         printf("this is the output %s\n", buff);
         fclose(oldJSONFile);
+        free(buff);
     }
 
 
