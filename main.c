@@ -35,14 +35,17 @@ int main() {
         if (oldJSONFileResult != oldFileSize) {
             errnum = errno;
             fprintf(stderr, "Reading file error: %s\n", strerror(errnum));
-        }
-
-        printf("this is the output %s\n", buff);
-        fclose(oldJSONFile);
-        free(buff);
+        };
     }
 
+    int i;
+    char currentChar;
 
+    for(i = 0; i < (sizeof(char)*oldJSONFileResult); i++) {
+        currentChar = *(++buff);
+    }
+
+    fclose(oldJSONFile);
+    free(buff);
     return 0;
 }
-
