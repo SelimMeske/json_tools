@@ -1,7 +1,13 @@
 {
     "rather": "simple",
     "newObject": {
-
+        "falazadobro": 200   
+    },
+    "someotherobj": {
+        "inner": 200,
+        "hello": {
+            "zitkovac": "Mesto"
+        }
     },
     "than": "something complicated",
     "ohyes": "Oh yes carl cox"

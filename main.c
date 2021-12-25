@@ -40,9 +40,40 @@ int main() {
 
     int i;
     char currentChar;
+    int sizeOfStripedJSONFile;
+    int valueStartFlag = 0;
+    char *jsonFilePointer = buff;
 
     for(i = 0; i < (sizeof(char)*oldJSONFileResult); i++) {
-        currentChar = *(++buff);
+        currentChar = *(++jsonFilePointer);
+        
+        if(currentChar == '"' && valueStartFlag == 0) {
+            valueStartFlag = 1;
+        }else if(currentChar == '"' && valueStartFlag == 1){
+            valueStartFlag = 0;
+        }
+
+        if(valueStartFlag != 1 && currentChar != ' ') {
+            ++sizeOfStripedJSONFile;
+        }
+    }
+
+    jsonFilePointer = buff;
+    char stripedJSONFile[sizeOfStripedJSONFile];
+
+    for(i = 0; i < (sizeof(char)*oldJSONFileResult); i++) {
+        currentChar = *(++jsonFilePointer);
+        
+        if(currentChar == '"' && valueStartFlag == 0) {
+            valueStartFlag = 1;
+        }else if(currentChar == '"' && valueStartFlag == 1){
+            valueStartFlag = 0;
+        }
+
+        if(valueStartFlag != 1 && currentChar != ' ') {
+            stripedJSONFile[i] = currentChar;
+            printf("Stripped --> %c\n", currentChar);
+        }
     }
 
     fclose(oldJSONFile);
