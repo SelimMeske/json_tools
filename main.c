@@ -40,7 +40,7 @@ int main() {
 
     int i;
     char currentChar;
-    int sizeOfStripedJSONFile;
+    int sizeOfStripedJSONFile = 0;
     int valueStartFlag = 0;
     char *jsonFilePointer = buff;
 
@@ -53,16 +53,28 @@ int main() {
             valueStartFlag = 0;
         }
 
-        if(valueStartFlag != 1 && currentChar != ' ') {
+        if(currentChar != ' ') {
             ++sizeOfStripedJSONFile;
+        }else if (currentChar == ' ') {
+            if (valueStartFlag == 1) {
+                ++sizeOfStripedJSONFile;
+            }
         }
     }
-
+    
     jsonFilePointer = buff;
-    char stripedJSONFile[sizeOfStripedJSONFile];
+    valueStartFlag = 0;
+    char *stripedJSONContent = (char*) malloc(sizeof(char)*sizeOfStripedJSONFile);
+    char const *stripedJSONContentDuplicate = stripedJSONContent;
 
+    if(stripedJSONContent == NULL) {
+        errnum = errno;
+        fprintf(stderr, "Memory can't be allocated. %s", strerror(errnum));
+        exit(0);
+    }
+    
     for(i = 0; i < (sizeof(char)*oldJSONFileResult); i++) {
-        currentChar = *(++jsonFilePointer);
+        currentChar = *(jsonFilePointer++);
         
         if(currentChar == '"' && valueStartFlag == 0) {
             valueStartFlag = 1;
@@ -70,13 +82,24 @@ int main() {
             valueStartFlag = 0;
         }
 
-        if(valueStartFlag != 1 && currentChar != ' ') {
-            stripedJSONFile[i] = currentChar;
-            printf("Stripped --> %c\n", currentChar);
+        if(currentChar != ' ') {
+            *(stripedJSONContent++) = currentChar;
+            printf("Adding striped content %c, at this address: %i\n", currentChar, (stripedJSONContent + i));
+        }else if (currentChar == ' ') {
+            if (valueStartFlag == 1) {
+                *(stripedJSONContent++) = currentChar;
+                printf("Adding striped content %c, at this address: %i\n", currentChar, (stripedJSONContent + i));
+            }
         }
+    }
+    
+    free(buff);
+    
+    for(i = 0; i < (sizeof(char)*sizeOfStripedJSONFile); i++) {
+        printf("NEW STRIP -> %i --> the elem --> %c\n", (stripedJSONContentDuplicate + i), *(stripedJSONContentDuplicate + i));
     }
 
     fclose(oldJSONFile);
-    free(buff);
+    
     return 0;
 }
